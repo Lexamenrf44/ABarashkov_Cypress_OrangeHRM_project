@@ -1,0 +1,17 @@
+{
+  "name": "cypresstestproject",
+  "version": "1.0.0",
+  "description": "cypresstest",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "abarashkov_cypress_test"
+  ],
+  "author": "Alexander Barashkov",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^12.8.1"
+  }
+}
