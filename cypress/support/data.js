@@ -1,6 +1,8 @@
 const Faker = require('faker');
 
 global.data = {
+    user_test_login: "Admin", //default
+    user_test_password: "admin123", //default
 
     generate: {
         email: () => {
