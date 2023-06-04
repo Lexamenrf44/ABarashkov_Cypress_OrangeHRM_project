@@ -15,40 +15,36 @@ const app = {
         }
     },
 
-    login(path = '', username = data.customer_001, password = data.defaultPassword, success = true) {
-        helpers.prepareCookies()
-        cy.request('GET', 'auth/sign_in').then((resp) => {
-            expect(resp.status).to.eq(200)
-            const token = (resp.body).match(/<meta name="csrf-token" content="(.*?)" \/>/)[1]
-            cy.request({
-                method: 'POST',
-                url: 'auth/sign_in',
-                form: true,
-                followRedirect: false,
-                body: {
-                    'authenticity_token': token,
-                    'user[email]': username,
-                    'user[password]': password,
-                },
-            }).then((res) => {
-                if (success) {
-                    expect(res.status).to.eq(302)
-                    const url = (res.redirectedToUrl).replace('/dashboard', '') + path
-                    cy.log(`Visiting: ${url}`)
-                    cy.visit(url)
-                } else expect(res.status).to.eq(200)
-            })
-        })
-    },
-
     assertSnackbar(msg) {
         cy.get('body').should('contain.text', msg)
     },
 
+    dropdownSelect(trigger, option = '', itemsToBeAsserted = [], isForce = false) {
+        cy.get(trigger).click({ force: isForce });
+        cy.wrap(itemsToBeAsserted).each((string) => {
+            cy.get(this.dropdown_simple_wrapper).should('contain.text', string);
+        });
+
+        if (option !== '') {
+            cy.get(this.dropdown_simple_wrapper)  // Locator for the <ul> element
+                .contains('li', option)        // Locator for the <li> element containing the name
+                .find('a.oxd-userdropdown-link')  // Locator for the <a> element within the <li>
+                .click({ force: isForce });
+        } else {
+            cy.get(this.dropdown_simple_item).any().click({ force: isForce });
+        }
+    },
+
+    //Common
+    content: '.the-content',
+    app_profile_dropdown: '.oxd-userdropdown-tab',
+    dropdown_simple_wrapper: 'ul[class^="oxd-dropdown-menu"]',
+    dropdown_simple_item: 'a.oxd-userdropdown-link',
+
     //Login page
-    app_field_username_input: '[placeholder="Username"]',
-    app_field_password_input: '[placeholder="Password"]',
-    app_login_button: '[type="submit"]',
+    app_field_username_input: '[name="username"]',
+    app_field_password_input: '[name="password"]',
+    app_login_button: '.oxd-button',
 
     //Main page
     app_brand_banner: '[alt="client brand banner"]'
